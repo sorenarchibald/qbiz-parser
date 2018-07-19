@@ -1,6 +1,17 @@
 # qbiz-parser
 
-Requires ply py module.
+Requires ply py module be installed for python.
+
+I have defined the lexical analyzer and gramer in sql_yacc.py
+To use create your own application, you must include these three statments:
+
+from sql_yacc import * # to import all symbols defined.
+import ply.lex as lex
+lexer = lex.lex()
+import ply.yacc as yacc
+parser = yacc.yacc()
+result = parser.parse(statement)
+
 
 See insertTests.py and createTests.py for supported syntax.
 
