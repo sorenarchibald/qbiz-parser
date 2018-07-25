@@ -27,7 +27,7 @@ Tasks:
 ## Fauzia's questions
 
 1. What are terminal and non-terminal tokens and how are they identified.
-    * Eg: 
+    * Eg:
      * Query1) SELECT * from table1 Where t1=t2 : SELECT terminal here?
      * Query2) CREATE TABLE table2 AS SELECT * from table1 where t1=t2 : SELECT not terminal here?
     * How to distinguish between them.
@@ -35,13 +35,24 @@ Tasks:
 ```
    query : parent_table AS select
    p[0] = (p[1], p[3])--What is p[0] here?
-   
+
    parent_table : CREATE TABLE IDENTIFIER
    p[0] = p[3] --Not sure about this too. What will be p[3] the select query table within the create table?
 ```
 
 ## Soren's Answers
-1. Terminals are really the same as tokens.  When talking about parsing, the objects are described as tokens, but in the context of a grammar, a different terminology is used.  Terminals are single tokens, such as FROM, WHERE and SELECT; non-terminals are a sequence of tokens, such as IDENTIFIER COMMA IDENTIFIER COMMA IDENTIFIER or just IDENTIFIER, this example could represent the variable length list of column names, in a select statement.  Compilers use a finite state machine; a grammar can be represented as a network of states (nodes) -- maybe look at the illustrations on Wikipedia.  Terminals are flags that signal the end of a series of non-terminals -- such as the variable length of a column list in the select-clause, or variable length of a table list in the from-clause, or variable length of boolean terms in the where-clause.  Non-terminals can be recursive, such as column_list : IDENTIFIER | column_list COMMA IDENTIFIER.  Read the previous statement as column_list is a IDENTIFIER or a column_list followed by a column_list then a COMMA then a IDENTIFIER.
+1. Terminals are really the same as tokens.  When talking about parsing, the objects are described as
+   tokens, but in the context of a grammar, a different terminology is used.  Terminals are single tokens,
+   such as FROM, WHERE and SELECT; non-terminals are a sequence of tokens, such as *IDENTIFIER COMMA
+   IDENTIFIER COMMA IDENTIFIER* or just *IDENTIFIER*, this example could represent the variable length
+   list of column names, in a select statement.  Compilers use a finite state machine; a grammar can
+   be represented as a network of states (nodes) -- maybe look at the illustrations on Wikipedia.
+   Terminals are flags that signal the end of a series of non-terminals -- such as the variable length of
+   a column list in the select-clause, or variable length of a table list in the from-clause, or
+   variable length of boolean terms in the where-clause.  Non-terminals can be recursive, such as column_list :
+   *IDENTIFIER | column_list COMMA IDENTIFIER*.
+
+   Read the previous statement as column_list is a *IDENTIFIER* or a column_list followed by a column_list then a *COMMA* then a *IDENTIFIER*.
 
 Now to your examples.  Terminals and non-terminals are part of a grammar and we could use many different grammars to describe a SQL queries (let's not get distracted here) but let's say I choose to define the following grammar to describe SQL:
 
