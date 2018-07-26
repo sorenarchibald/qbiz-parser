@@ -27,10 +27,12 @@ Tasks:
 ## Fauzia's questions
 
 1. What are terminal and non-terminal tokens and how are they identified.
-    * Eg:
-     * Query1) SELECT * from table1 Where t1=t2 : SELECT terminal here?
-     * Query2) CREATE TABLE table2 AS SELECT * from table1 where t1=t2 : SELECT not terminal here?
-    * How to distinguish between them.
+
+   Eg:
+      * Query1) SELECT * from table1 Where t1=t2 : SELECT terminal here?
+      * Query2) CREATE TABLE table2 AS SELECT * from table1 where t1=t2 : SELECT not terminal here?
+
+   How to distinguish between them.
 1. Slide 4 has the below lines:
 ```
    query : parent_table AS select
@@ -56,10 +58,10 @@ Tasks:
 
    Now to your examples.  Terminals and non-terminals are part of a grammar and we could use many different grammars to describe a SQL queries (let's not get distracted here) but let's say I choose to define the following grammar to describe SQL:
 
-```
-query : SELECT column_list FROM table_list WHERE boolean_list SEMI_COLON
-      | SELECT column_list FROM table_list SEMI_COLON
-``` 
+   ```
+   query : SELECT column_list FROM table_list WHERE boolean_list SEMI_COLON
+         | SELECT column_list FROM table_list SEMI_COLON
+   ``` 
    In the above, all lower case words are non-terminals; all upper-case words are terminals.  I define two possible syntax rules for a query -- one with a where-clause and one without.   Reading from left to right, if the compiler doesn't find a SELECT as the first token, it will throw a syntax error.  Provided the SQL is well formed, as the compiler processes the table_list, it's on the lookout for either a WHERE or a SEMI_COLON, which will flag the end of the list and begin a new state and a new set of rules or terminate.  Given your SQL statements and the grammar I've defined, SELECT is a TERMINAL in both statements.
 
 2. With each grammar rule, there is an action associated with it.  The equation, or a more complicated series of statements, describe how to process the series of tokens.  The p[0] is the result; the other p-values are positional indices.  Imagine the series of tokens as a list.  Grammar rules are going to delete some number of elements and replace them with a new element -- know as a reduce operation (action).  Using the second SQL statement, my list (in python) would look like:
