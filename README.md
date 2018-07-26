@@ -26,7 +26,7 @@ Tasks:
 
 ## Fauzia's questions
 
-1. What are terminal and non-terminal tokens and how are they identified.
+1. What are terminal and non-terminal tokens and how are they identified?
 
    Eg:
       * Query1) SELECT * from table1 Where t1=t2 : SELECT terminal here?
@@ -46,14 +46,17 @@ Tasks:
 
 1. Terminals are really the same as tokens.  When talking about parsing, the objects are described as
    tokens, but in the context of a grammar, a different terminology is used.  Terminals are single tokens,
-   such as FROM, WHERE and SELECT; non-terminals are a sequence of tokens, such as *IDENTIFIER COMMA
+   such as FROM, WHERE and SELECT; non-terminals are defined as other grammar rules.  They may be an variable
+   number of tokens or a collection of possible grammar rules.  An example of possible grammars is: *IDENTIFIER COMMA
    IDENTIFIER COMMA IDENTIFIER* or just *IDENTIFIER*, this example could represent the variable length
    list of column names, in a select statement.  Compilers use a finite state machine; a grammar can
    be represented as a network of states (nodes) -- maybe look at the illustrations on Wikipedia.
    Terminals are flags that signal the end of a series of non-terminals -- such as the variable length of
    a column list in the select-clause, or variable length of a table list in the from-clause, or
    variable length of boolean terms in the where-clause.  Non-terminals can be recursive, such as column_list :
+   
    *IDENTIFIER | column_list COMMA IDENTIFIER*.
+   
    Read the previous statement as column_list is a *IDENTIFIER* or a *column_list* followed by a *column_list* then a *COMMA* then a *IDENTIFIER*.
 
    Now to your examples.  Terminals and non-terminals are part of a grammar and we could use many different grammars to describe a SQL queries (let's not get distracted here) but let's say I choose to define the following grammar to describe SQL:
@@ -62,7 +65,8 @@ Tasks:
    query : SELECT column_list FROM table_list WHERE boolean_list SEMI_COLON
          | SELECT column_list FROM table_list SEMI_COLON
    ``` 
-   In the above, all lower case words are non-terminals; all upper-case words are terminals.  I define two possible syntax rules for a query -- one with a where-clause and one without.   Reading from left to right, if the compiler doesn't find a SELECT as the first token, it will throw a syntax error.  Provided the SQL is well formed, as the compiler processes the table_list, it's on the lookout for either a WHERE or a SEMI_COLON, which will flag the end of the list and begin a new state and a new set of rules or terminate.  Given your SQL statements and the grammar I've defined, SELECT is a TERMINAL in both statements.
+   
+   In the above, all lower case words are non-terminals; all upper-case words are terminals.  I define two possible syntax rules for a query -- one with a where-clause and one without.   Reading from left to right, if the compiler doesn't find a *SELECT* as the first token, it will throw a syntax error.  Provided the SQL is well formed, as the compiler processes the table_list, it's on the lookout for either a *WHERE* or a *SEMI_COLON*, which will flag the end of the list and begin a new state and a new set of rules or terminate.  Given your SQL statements and the grammar I've defined, *SELECT* is a *TERMINAL* in both statements.
 
 2. With each grammar rule, there is an action associated with it.  The equation, or a more complicated series of statements, describe how to process the series of tokens.  The p[0] is the result; the other p-values are positional indices.  Imagine the series of tokens as a list.  Grammar rules are going to delete some number of elements and replace them with a new element -- know as a reduce operation (action).  Using the second SQL statement, my list (in python) would look like:
    ```
