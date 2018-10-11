@@ -3,7 +3,8 @@
 import ply.lex as lex
 
 KEYWORDS = ['CREATE', 'TABLE', 'SELECT', 'FROM', 'JOIN', 'AS', 'ON', 'INSERT', 'INTO', 'VALUES', 'USING',
-            'WITH', 'WHERE', 'ORDER', 'BY', 'GROUP', 'HAVING', 'LIMIT', 'UNION', 'ALL']
+            'WITH', 'WHERE', 'ORDER', 'BY', 'GROUP', 'HAVING', 'LIMIT', 'UNION', 'ALL','OVERWRITE','PARTITION', 'AND',
+            'IS', 'OR', 'NULL']
 
 # List of token names.   This is always required
 tokens = [
@@ -108,8 +109,13 @@ def p_create(p):
 
 def p_parent_table(p):
     ''' parent_table : CREATE TABLE IDENTIFIER
-                     | INSERT INTO IDENTIFIER'''
-    p[0] = p[3]
+                     | INSERT INTO IDENTIFIER
+                     | INSERT OVERWRITE TABLE IDENTIFIER
+                     | INSERT OVERWRITE TABLE IDENTIFIER PARTITION LP useless_crap RP'''
+    if p[3] == 'TABLE':
+        p[0] = p[4]
+    else:
+        p[0] = p[3]
 
 def p_cte(p):
     ' cte : WITH IDENTIFIER AS '
@@ -191,8 +197,13 @@ def p_sigle_item(p):
                     | NUMBER
                     | func
                     | math_term
+                    | expression
                     '''
 
+"""
+    I'm overloading a syntax that was meant for arguments to a function or a select list
+    I don't know if I should do this... might be a mistake.
+"""
 def p_list_item(p):
     ''' list_item : single_item COMMA func alias
                   | single_item COMMA IDENTIFIER alias
@@ -201,7 +212,11 @@ def p_list_item(p):
                   | single_item COMMA func
                   | single_item COMMA IDENTIFIER
                   | single_item COMMA NUMBER
+                  | expression AND expression
+                  | expression OR expression
                   | list_item COMMA single_item
+                  | list_item OR expression
+                  | list_item AND expression
                   '''
     pass
 
@@ -249,9 +264,13 @@ def p_table_list(p):
 
 def p_join_type(p):
     ''' join_type : JOIN
-                  | IDENTIFIER JOIN '''
+                  | IDENTIFIER JOIN 
+                  | IDENTIFIER IDENTIFIER JOIN '''
     if p[1] == 'cross':
         p[0] = p[1]
+
+#     elif p[1] in ['LEFT','RIGHT']:
+#	p[0] = p[3]
 
 def p_table(p):
     ''' table : subquery alias
@@ -270,7 +289,9 @@ def p_alias(p):
     pass
 
 def p_expression(p):
-    '''expression : IDENTIFIER EQUAL IDENTIFIER'''
+    '''expression : IDENTIFIER EQUAL IDENTIFIER
+                  | IDENTIFIER IS NULL
+                  '''
     pass
 
 def p_empty(p):

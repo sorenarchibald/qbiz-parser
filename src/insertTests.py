@@ -1,4 +1,4 @@
-
+#!/usr/bin/env python3
 # insertTest1 = "INSERT INTO employee (id, name, dept, age, salary location) SELECT emp_id, emp_name, dept, age, salary, location FROM temp_employee;"
 insertTest1 = "INSERT INTO employee (id, name, dept) SELECT emp_id, emp_name, dept FROM temp_employee;"
 insertTest2 = "INSERT INTO employee SELECT * FROM temp_employee;"
