@@ -16,7 +16,9 @@ tokens = [
    'STAR',
    'COMMA',
    'RP',
-   'LP'
+   'LP',
+   'LITERAL',
+   'ESCAPE'
 ] + KEYWORDS
 
 # Keywords special
@@ -30,13 +32,16 @@ tokens = [
 
 # Other
 t_EQUAL = r'='
-t_SPECIAL = r'(<|>|\-|\+)'
+# t_SPECIAL = r'(<|>|\-|\+)'
+t_SPECIAL = r'[<>\-\+\[\]%]'
 t_NUMBER = r'(\d+\.\d+|\d+\.|\.\+d|\d+)'
 t_TERMINATOR = r';'
 t_STAR = r'\*'
 t_COMMA = r','
 t_LP = r'\('
 t_RP = r'\)'
+t_LITERAL = r'\'.*\''
+t_ESCAPE = r'\\\\'
 
 
 def t_IDENTIFIER(t):
@@ -228,6 +233,9 @@ def p_func(p):
 def p_something(p):
     ''' something : IDENTIFIER
                   | NUMBER
+                  | SPECIAL ESCAPE
+                  | ESCAPE
+                  | LITERAL
                   | something COMMA something
                   | math_term'''
 
